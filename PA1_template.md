@@ -9,16 +9,19 @@ output:
 ## Loading and preprocessing the data
 The data is in a .zip file in the working directory.
 Unzipping the .zip file:
-```{r}
+
+```r
 unzip("activity.zip")
 ```
 
 Loading the data from the contents of the .zip file:
-```{r}
+
+```r
 data <- read.table("activity.csv", header = TRUE, sep = ",", na.strings = "NA", stringsAsFactors = FALSE)
 ```
 ## What is mean total number of steps taken per day?
-```{r}
+
+```r
 dates <- unique(data$date)
 steps_each_date <- NULL
 for (date in dates) {
@@ -28,16 +31,32 @@ for (date in dates) {
     }
 }
 ```
-```{r}
+
+```r
 mean(steps_each_date)
+```
+
+```
+## [1] 10766.19
+```
+
+```r
 median(steps_each_date)
 ```
-```{r}
+
+```
+## [1] 10765
+```
+
+```r
 hist(steps_each_date)
 ```
 
+![plot of chunk unnamed-chunk-5](figure/unnamed-chunk-5-1.png) 
+
 ## What is the average daily activity pattern?
-```{r}
+
+```r
 intervals <- unique(data$interval)
 avg_steps_each_interval <- NULL
 for (interval in intervals) {
@@ -54,24 +73,42 @@ times <- strptime(times, format = "%H:%M")
 plot(times, avg_steps_each_interval, type="l", xlab = "Time", ylab = "Average Number of Steps")
 ```
 
+![plot of chunk unnamed-chunk-6](figure/unnamed-chunk-6-1.png) 
+
 "Which 5-minute interval, on average across all the days in the dataset, contains the maximum [average] number of steps?"
-```{r}
+
+```r
 most_active_interval <- times[avg_steps_each_interval == max(avg_steps_each_interval)]
 most_active_interval <- format(most_active_interval, "%H:%M")
 most_active_interval
 ```
+
+```
+## [1] "08:35"
+```
 The maximum average number of steps:
-```{r}
+
+```r
 max(avg_steps_each_interval)
+```
+
+```
+## [1] 206.1698
 ```
 ## Imputing missing values
 The number of missing values in the dataset:
-```{r}
+
+```r
 length(data[is.na(data$steps), 1])
 ```
 
+```
+## [1] 2304
+```
+
 Filling in missing NA values:
-```{r}
+
+```r
 data_NAs_replaced <- data
 number_of_rows <- length(data[,1])
 for (row_index in seq(1, number_of_rows)) {
@@ -88,7 +125,8 @@ for (row_index in seq(1, number_of_rows)) {
 }
 ```
 
-```{r}
+
+```r
 steps_each_date <- NULL
 for (date in dates) {
     steps_this_date <- data_NAs_replaced[!is.na(data_NAs_replaced$steps) & data_NAs_replaced$date == date, 1]
@@ -97,23 +135,40 @@ for (date in dates) {
     }
 }
 ```
-```{r}
+
+```r
 mean(steps_each_date)
+```
+
+```
+## [1] 10766.19
+```
+
+```r
 median(steps_each_date)
 ```
-```{r}
+
+```
+## [1] 10766.19
+```
+
+```r
 hist(steps_each_date)
 ```
+
+![plot of chunk unnamed-chunk-13](figure/unnamed-chunk-13-1.png) 
 
 Replacing NAs with the corresponding interval average does not affect the mean or median, but it does increase the height of each histogram bar.
 
 ## Are there differences in activity patterns between weekdays and weekends?
 
-```{r}
+
+```r
 data_NAs_replaced$type_of_day <- weekdays(strptime(data$date, format = "%Y-%m-%d"))
 ```
 
-```{r}
+
+```r
 intervals <- unique(data$interval)
 avg_steps_each_interval <- NULL
 for (interval in intervals) {
@@ -146,3 +201,5 @@ times <- strptime(times, format = "%H:%M")
 
 plot(times, avg_steps_each_interval, type="l", xlab = "Time", ylab = "Average Number of Steps", main = "Weekends")
 ```
+
+![plot of chunk unnamed-chunk-15](figure/unnamed-chunk-15-1.png) 
