@@ -70,7 +70,7 @@ The number of missing values in the dataset:
 length(data[is.na(data$steps), 1])
 ```
 
-Filling in missing NA values:
+Filling Strategy: Filling in missing NA values with the corresponding interval average :
 ```{r}
 data_NAs_replaced <- data
 number_of_rows <- length(data[,1])
